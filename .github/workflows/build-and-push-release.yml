@@ -12,10 +12,6 @@ on:
         required: true
         default: 2.276.0
 
-permissions:
-  contents: read
-  packages: write
-
 env:
   DOCKER_REGISTRY: ghcr.io
 
@@ -49,10 +45,10 @@ jobs:
 
           echo "v${{ inputs.proxy-version }}" > .proxy-version
           
-          ./docker-build-proxy
-          ./docker-build-controller
-          ./docker-build-debug
-          ./docker-build-policy-controller
+          ./docker-build-proxy --no-cache
+          ./docker-build-controller --no-cache
+          ./docker-build-debug --no-cache
+          ./docker-build-policy-controller --no-cache
 
           docker images
 
