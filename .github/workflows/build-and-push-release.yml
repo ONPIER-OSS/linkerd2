@@ -15,7 +15,7 @@ on:
 
 
 jobs:
-  build:
+  build-and-push:
     runs-on: ubuntu-24.04
 
     steps:
