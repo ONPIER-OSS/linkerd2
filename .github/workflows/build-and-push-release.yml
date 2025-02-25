@@ -13,8 +13,7 @@ on:
         default: 2.276.0
 
 env:
-  DOCKER_REGISTRY: 'foobar'
-
+  DOCKER_REGISTRY: 'ghcr.io'
 
 jobs:
   build-and-push:
@@ -30,8 +29,8 @@ jobs:
           persist-credentials: false
           ref: version-${{ inputs.linkerd-version }}
 
-      - name: Build Docker images
-        id: build-image
+      - name: Build and tag images
+        id: build-and-tag
         run: |
           cd bin
 
@@ -39,16 +38,20 @@ jobs:
           
           ./docker-build-proxy
           ./docker-build-controller
-          ./docker-build-debug
-          ./docker-build-policy-controller
+          #./docker-build-debug
+          #./docker-build-policy-controller
 
 
-          echo PROXY_IMAGE="${DOCKER_REGISTRY}/linkerd/proxy:${{ inputs.proxy-version }}"
-          echo CONTROLLER_IMAGE="${DOCKER_REGISTRY}/linkerd/controller:${{ inputs.linkerd-version }}"
-          echo DEBUG_IMAGE="${DOCKER_REGISTRY}/linkerd/debug:${{ inputs.linkerd-version }}"
-          echo POLICY_CONTROLLER_IMAGE="${DOCKER_REGISTRY}/linkerd/policy-controller:${{ inputs.linkerd-version }}"
+          #echo PROXY_IMAGE="${DOCKER_REGISTRY}/linkerd/proxy:${{ inputs.proxy-version }}"
+          #echo CONTROLLER_IMAGE="${DOCKER_REGISTRY}/linkerd/controller:${{ inputs.linkerd-version }}"
+          #echo DEBUG_IMAGE="${DOCKER_REGISTRY}/linkerd/debug:${{ inputs.linkerd-version }}"
+          #echo POLICY_CONTROLLER_IMAGE="${DOCKER_REGISTRY}/linkerd/policy-controller:${{ inputs.linkerd-version }}"
 
 
+          #docker tag cr.l5d.io/linkerd/proxy:"$INTERNAL_LINKERD_VERSION" "$PROXY_IMAGE"
+          #docker tag cr.l5d.io/linkerd/controller:"$INTERNAL_LINKERD_VERSION" "$CONTROLLER_IMAGE"
+          #docker tag cr.l5d.io/linkerd/debug:"$INTERNAL_LINKERD_VERSION" "$DEBUG_IMAGE"
+          #docker tag cr.l5d.io/linkerd/policy-controller:"$INTERNAL_LINKERD_VERSION" "$POLICY_CONTROLLER_IMAGE"
 
 
 
