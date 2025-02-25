@@ -45,10 +45,10 @@ jobs:
 
           echo "v${{ inputs.proxy-version }}" > .proxy-version
           
-          ./docker-build-proxy --no-cache
-          ./docker-build-controller --no-cache
-          ./docker-build-debug --no-cache
-          ./docker-build-policy-controller --no-cache
+          ./docker-build-proxy
+          ./docker-build-controller
+          ./docker-build-debug
+          ./docker-build-policy-controller
 
           docker images
 
