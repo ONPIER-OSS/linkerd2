@@ -23,7 +23,7 @@ jobs:
 
     steps:
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@f7ce87c1d6bead3e36075b2ce75da1f6cc28aaca
 
       - name: Checkout code
         uses: actions/checkout@v4
@@ -39,7 +39,6 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build images
-        id: build-images
         run: |
           cd bin
 
@@ -53,7 +52,6 @@ jobs:
           docker images
 
       - name: Tag images
-        id: tag-images
         run: |
           docker tag ${DOCKER_REGISTRY}/proxy:version-${{ inputs.linkerd-version }} ${DOCKER_REGISTRY}/linkerd/proxy:${{ inputs.proxy-version }}
           docker tag ${DOCKER_REGISTRY}/controller:version-${{ inputs.linkerd-version }} ${DOCKER_REGISTRY}/linkerd/controller:${{ inputs.linkerd-version }}
@@ -62,7 +60,9 @@ jobs:
 
           docker images
 
-
-
-
-
+      - name: Push images
+        run: |
+          docker push ${DOCKER_REGISTRY}/linkerd/proxy:${{ inputs.proxy-version }}
+          docker push ${DOCKER_REGISTRY}/linkerd/controller:${{ inputs.linkerd-version }}
+          docker push ${DOCKER_REGISTRY}/linkerd/debug:${{ inputs.linkerd-version }}
+          docker push ${DOCKER_REGISTRY}/linkerd/policy-controller:${{ inputs.linkerd-version }}
