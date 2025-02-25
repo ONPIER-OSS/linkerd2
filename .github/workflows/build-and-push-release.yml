@@ -8,7 +8,7 @@ on:
         required: true
         default: 2.17
       proxy-version:
-        description: 'A linkerd proxy release or tag'
+        description: 'A linkerd proxy release'
         required: true
         default: 2.276.0
 
@@ -37,8 +37,8 @@ jobs:
 
           echo "v${{ inputs.proxy-version }}" > .proxy-version
           
-          #./docker-build-proxy
-          #./docker-build-controller
+          ./docker-build-proxy
+          ./docker-build-controller
           #./docker-build-debug
           #./docker-build-policy-controller
 
@@ -46,9 +46,6 @@ jobs:
 
           docker images
 
-          # tag images
-
-          # push images to nexus
 
 
 
