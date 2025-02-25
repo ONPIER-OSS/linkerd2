@@ -41,8 +41,8 @@ jobs:
           #./docker-build-debug
           #./docker-build-policy-controller
 
-          docker tag ${DOCKER_REGISTRY}/linkerd/proxy:version-${{ inputs.linkerd-version }} ${DOCKER_REGISTRY}/linkerd/proxy:${{ inputs.proxy-version }}
-          docker tag ${DOCKER_REGISTRY}/linkerd/controller:version-${{ inputs.linkerd-version }} ${DOCKER_REGISTRY}/linkerd/controller:${{ inputs.linkerd-version }}
+          docker tag ${DOCKER_REGISTRY}/proxy:version-${{ inputs.linkerd-version }} ${DOCKER_REGISTRY}/linkerd/proxy:${{ inputs.proxy-version }}
+          docker tag ${DOCKER_REGISTRY}/controller:version-${{ inputs.linkerd-version }} ${DOCKER_REGISTRY}/linkerd/controller:${{ inputs.linkerd-version }}
           #docker tag ${DOCKER_REGISTRY}/linkerd/debug:version-${{ inputs.linkerd-version }} ${DOCKER_REGISTRY}/linkerd/debug:${{ inputs.linkerd-version }}
           #docker tag ${DOCKER_REGISTRY}/linkerd/policy-controller:version-${{ inputs.linkerd-version }} ${DOCKER_REGISTRY}/linkerd/policy-controller:${{ inputs.linkerd-version }}
 
