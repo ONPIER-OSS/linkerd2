@@ -12,6 +12,10 @@ on:
         required: true
         default: 2.276.0
 
+env:
+  DOCKER_REGISTRY: 'foobar'
+
+
 jobs:
   build-and-push:
     runs-on: ubuntu-24.04
@@ -31,16 +35,21 @@ jobs:
         run: |
           cd bin
 
-          INTERNAL_LINKERD_VERSION=$(git describe --tags --always)
-
-          echo "${INTERNAL_LINKERD_VERSION}"
-
           echo "v${{ inputs.proxy-version }}" > .proxy-version
           
           ./docker-build-proxy
           ./docker-build-controller
-          #./docker-build-debug
-          #./docker-build-policy-controller
+          ./docker-build-debug
+          ./docker-build-policy-controller
+
+
+          echo PROXY_IMAGE="${DOCKER_REGISTRY}/linkerd/proxy:${{ inputs.proxy-version }}"
+          echo CONTROLLER_IMAGE="${DOCKER_REGISTRY}/linkerd/controller:${{ inputs.linkerd-version }}"
+          echo DEBUG_IMAGE="${DOCKER_REGISTRY}/linkerd/debug:${{ inputs.linkerd-version }}"
+          echo POLICY_CONTROLLER_IMAGE="${DOCKER_REGISTRY}/linkerd/policy-controller:${{ inputs.linkerd-version }}"
+
+
+
 
 
 
