@@ -12,12 +12,18 @@ on:
         required: true
         default: 2.276.0
 
+permissions:
+  contents: read
+  packages: write
+
 env:
   DOCKER_REGISTRY: ghcr.io
 
 jobs:
   build-and-push:
     runs-on: ubuntu-24.04
+    permissions:
+      packages: write
 
     steps:
       - name: Set up Docker Buildx
