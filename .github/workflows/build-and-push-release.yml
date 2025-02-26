@@ -14,6 +14,7 @@ on:
 
 env:
   DOCKER_REGISTRY: ghcr.io
+  GITHUB_ORG: onpier-oss
 
 jobs:
   build-and-push:
@@ -53,16 +54,16 @@ jobs:
 
       - name: Tag images
         run: |
-          docker tag ${DOCKER_REGISTRY}/proxy:version-${{ inputs.linkerd-version }} ${DOCKER_REGISTRY}/linkerd/proxy:${{ inputs.proxy-version }}
-          docker tag ${DOCKER_REGISTRY}/controller:version-${{ inputs.linkerd-version }} ${DOCKER_REGISTRY}/linkerd/controller:${{ inputs.linkerd-version }}
-          docker tag ${DOCKER_REGISTRY}/debug:version-${{ inputs.linkerd-version }} ${DOCKER_REGISTRY}/linkerd/debug:${{ inputs.linkerd-version }}
-          docker tag ${DOCKER_REGISTRY}/policy-controller:version-${{ inputs.linkerd-version }} ${DOCKER_REGISTRY}/linkerd/policy-controller:${{ inputs.linkerd-version }}
+          docker tag ${DOCKER_REGISTRY}/proxy:version-${{ inputs.linkerd-version }} ${DOCKER_REGISTRY}/${GITHUB_ORG}/linkerd/proxy:${{ inputs.proxy-version }}
+          docker tag ${DOCKER_REGISTRY}/controller:version-${{ inputs.linkerd-version }} ${DOCKER_REGISTRY}/${GITHUB_ORG}/linkerd/controller:${{ inputs.linkerd-version }}
+          docker tag ${DOCKER_REGISTRY}/debug:version-${{ inputs.linkerd-version }} ${DOCKER_REGISTRY}/${GITHUB_ORG}/linkerd/debug:${{ inputs.linkerd-version }}
+          docker tag ${DOCKER_REGISTRY}/policy-controller:version-${{ inputs.linkerd-version }} ${DOCKER_REGISTRY}/${GITHUB_ORG}/linkerd/policy-controller:${{ inputs.linkerd-version }}
 
           docker images
 
       - name: Push images
         run: |
-          #docker push ${DOCKER_REGISTRY}/linkerd/proxy:${{ inputs.proxy-version }}
-          #docker push ${DOCKER_REGISTRY}/linkerd/controller:${{ inputs.linkerd-version }}
-          #docker push ${DOCKER_REGISTRY}/linkerd/debug:${{ inputs.linkerd-version }}
-          #docker push ${DOCKER_REGISTRY}/linkerd/policy-controller:${{ inputs.linkerd-version }}
+          #docker push ${DOCKER_REGISTRY}/${GITHUB_ORG}/linkerd/proxy:${{ inputs.proxy-version }}
+          #docker push ${DOCKER_REGISTRY}/${GITHUB_ORG}/linkerd/controller:${{ inputs.linkerd-version }}
+          #docker push ${DOCKER_REGISTRY}/${GITHUB_ORG}/linkerd/debug:${{ inputs.linkerd-version }}
+          #docker push ${DOCKER_REGISTRY}/${GITHUB_ORG}/linkerd/policy-controller:${{ inputs.linkerd-version }}
