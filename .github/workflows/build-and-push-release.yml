@@ -63,7 +63,7 @@ jobs:
 
       - name: Push images
         run: |
-          #docker push ${DOCKER_REGISTRY}/${GITHUB_ORG}/linkerd/proxy:${{ inputs.proxy-version }}
-          #docker push ${DOCKER_REGISTRY}/${GITHUB_ORG}/linkerd/controller:${{ inputs.linkerd-version }}
-          #docker push ${DOCKER_REGISTRY}/${GITHUB_ORG}/linkerd/debug:${{ inputs.linkerd-version }}
-          #docker push ${DOCKER_REGISTRY}/${GITHUB_ORG}/linkerd/policy-controller:${{ inputs.linkerd-version }}
+          docker push ${DOCKER_REGISTRY}/${GITHUB_ORG}/linkerd/proxy:${{ inputs.proxy-version }}
+          docker push ${DOCKER_REGISTRY}/${GITHUB_ORG}/linkerd/controller:${{ inputs.linkerd-version }}
+          docker push ${DOCKER_REGISTRY}/${GITHUB_ORG}/linkerd/debug:${{ inputs.linkerd-version }}
+          docker push ${DOCKER_REGISTRY}/${GITHUB_ORG}/linkerd/policy-controller:${{ inputs.linkerd-version }}
