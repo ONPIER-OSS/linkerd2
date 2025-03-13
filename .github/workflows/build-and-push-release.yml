@@ -10,7 +10,7 @@ on:
       proxy-version:
         description: 'A linkerd proxy release'
         required: true
-        default: 2.276.0
+        default: 2.266.0
 
 env:
   DOCKER_REGISTRY: ghcr.io
