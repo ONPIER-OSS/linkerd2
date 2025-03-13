@@ -36,6 +36,25 @@ var (
 			},
 			Spec: corev1.PodSpec{
 				ServiceAccountName: "serviceaccount-name",
+				Containers: []corev1.Container{
+					{
+						Name: k8s.ProxyContainerName,
+						Env: []corev1.EnvVar{
+							{
+								Name:  envInboundListenAddr,
+								Value: "0.0.0.0:4143",
+							},
+							{
+								Name:  envAdminListenAddr,
+								Value: "0.0.0.0:4191",
+							},
+							{
+								Name:  envControlListenAddr,
+								Value: "0.0.0.0:4190",
+							},
+						},
+					},
+				},
 			},
 		},
 		OwnerKind: "replicationcontroller",
@@ -56,6 +75,25 @@ var (
 			},
 			Spec: corev1.PodSpec{
 				ServiceAccountName: "serviceaccount-name",
+				Containers: []corev1.Container{
+					{
+						Name: k8s.ProxyContainerName,
+						Env: []corev1.EnvVar{
+							{
+								Name:  envInboundListenAddr,
+								Value: "[::]:4143",
+							},
+							{
+								Name:  envAdminListenAddr,
+								Value: "[::]:4191",
+							},
+							{
+								Name:  envControlListenAddr,
+								Value: "[::]:4190",
+							},
+						},
+					},
+				},
 			},
 		},
 		OwnerKind: "replicationcontroller",
@@ -74,6 +112,27 @@ var (
 					k8s.ProxyDeploymentLabel: "deployment-name",
 				},
 			},
+			Spec: corev1.PodSpec{
+				Containers: []corev1.Container{
+					{
+						Name: k8s.ProxyContainerName,
+						Env: []corev1.EnvVar{
+							{
+								Name:  envInboundListenAddr,
+								Value: "0.0.0.0:4143",
+							},
+							{
+								Name:  envAdminListenAddr,
+								Value: "0.0.0.0:4191",
+							},
+							{
+								Name:  envControlListenAddr,
+								Value: "0.0.0.0:4190",
+							},
+						},
+					},
+				},
+			},
 		},
 	}
 
@@ -87,6 +146,27 @@ var (
 				Labels: map[string]string{
 					k8s.ControllerNSLabel:    "linkerd",
 					k8s.ProxyDeploymentLabel: "deployment-name",
+				},
+			},
+			Spec: corev1.PodSpec{
+				Containers: []corev1.Container{
+					{
+						Name: k8s.ProxyContainerName,
+						Env: []corev1.EnvVar{
+							{
+								Name:  envInboundListenAddr,
+								Value: "[::1]:4143",
+							},
+							{
+								Name:  envAdminListenAddr,
+								Value: "0.0.0.0:4191",
+							},
+							{
+								Name:  envControlListenAddr,
+								Value: "0.0.0.0:4190",
+							},
+						},
+					},
 				},
 			},
 		},
@@ -116,12 +196,98 @@ var (
 								Name:  envInboundListenAddr,
 								Value: "0.0.0.0:4143",
 							},
+							{
+								Name:  envAdminListenAddr,
+								Value: "0.0.0.0:4191",
+							},
+							{
+								Name:  envControlListenAddr,
+								Value: "0.0.0.0:4190",
+							},
 						},
 					},
 				},
 			},
 		},
 		OpaqueProtocol: true,
+	}
+
+	podAdmin = watcher.Address{
+		IP:   "1.1.1.5",
+		Port: 4191,
+		Pod: &corev1.Pod{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      "podAdmin",
+				Namespace: "ns",
+				Labels: map[string]string{
+					k8s.ControllerNSLabel:    "linkerd",
+					k8s.ProxyDeploymentLabel: "deployment-name",
+				},
+			},
+			Spec: corev1.PodSpec{
+				ServiceAccountName: "serviceaccount-name",
+				Containers: []corev1.Container{
+					{
+						Name: k8s.ProxyContainerName,
+						Env: []corev1.EnvVar{
+							{
+								Name:  envInboundListenAddr,
+								Value: "0.0.0.0:4143",
+							},
+							{
+								Name:  envAdminListenAddr,
+								Value: "0.0.0.0:4191",
+							},
+							{
+								Name:  envControlListenAddr,
+								Value: "0.0.0.0:4190",
+							},
+						},
+					},
+				},
+			},
+		},
+		OwnerKind: "replicationcontroller",
+		OwnerName: "rc-name",
+	}
+
+	podControl = watcher.Address{
+		IP:   "1.1.1.6",
+		Port: 4190,
+		Pod: &corev1.Pod{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      "podControl",
+				Namespace: "ns",
+				Labels: map[string]string{
+					k8s.ControllerNSLabel:    "linkerd",
+					k8s.ProxyDeploymentLabel: "deployment-name",
+				},
+			},
+			Spec: corev1.PodSpec{
+				ServiceAccountName: "serviceaccount-name",
+				Containers: []corev1.Container{
+					{
+						Name: k8s.ProxyContainerName,
+						Env: []corev1.EnvVar{
+							{
+								Name:  envInboundListenAddr,
+								Value: "0.0.0.0:4143",
+							},
+							{
+								Name:  envAdminListenAddr,
+								Value: "0.0.0.0:4191",
+							},
+							{
+								Name:  envControlListenAddr,
+								Value: "0.0.0.0:4190",
+							},
+						},
+					},
+				},
+			},
+		},
+		OwnerKind: "replicationcontroller",
+		OwnerName: "rc-name",
 	}
 
 	ew1 = watcher.Address{
@@ -136,6 +302,12 @@ var (
 				MeshTLS: ewv1beta1.MeshTLS{
 					Identity:   "spiffe://some-domain/ew-1",
 					ServerName: "server.local",
+				},
+				Ports: []ewv1beta1.PortSpec{
+					{
+						Name: k8s.ProxyPortName,
+						Port: 4143,
+					},
 				},
 			},
 		},
@@ -160,6 +332,12 @@ var (
 					Identity:   "spiffe://some-domain/ew-2",
 					ServerName: "server.local",
 				},
+				Ports: []ewv1beta1.PortSpec{
+					{
+						Name: k8s.ProxyPortName,
+						Port: 4143,
+					},
+				},
 			},
 		},
 	}
@@ -180,6 +358,12 @@ var (
 				MeshTLS: ewv1beta1.MeshTLS{
 					Identity:   "spiffe://some-domain/ew-3",
 					ServerName: "server.local",
+				},
+				Ports: []ewv1beta1.PortSpec{
+					{
+						Name: k8s.ProxyPortName,
+						Port: 4143,
+					},
 				},
 			},
 		},
@@ -438,8 +622,8 @@ func TestEndpointTranslatorForPods(t *testing.T) {
 		translator.Start()
 		defer translator.Stop()
 
-		translator.Add(mkAddressSetForPods(t, pod1, pod2, pod3))
-		translator.Remove(mkAddressSetForPods(t, pod3))
+		translator.Add(mkAddressSetForServices(pod1, pod2, pod3))
+		translator.Remove(mkAddressSetForServices(pod3))
 
 		addressesAdded := (<-mockGetServer.updatesReceived).GetAdd().Addrs
 		actualNumberOfAdded := len(addressesAdded)
@@ -461,6 +645,65 @@ func TestEndpointTranslatorForPods(t *testing.T) {
 		checkAddressAndWeight(t, addressesAdded[0], pod1, defaultWeight)
 		checkAddressAndWeight(t, addressesAdded[1], pod2, defaultWeight)
 		checkAddress(t, addressesRemoved[0], pod3)
+	})
+
+	t.Run("Sends addresses with opaque transport", func(t *testing.T) {
+		expectedProtocolHint := &pb.ProtocolHint{
+			Protocol: &pb.ProtocolHint_H2_{
+				H2: &pb.ProtocolHint_H2{},
+			},
+			OpaqueTransport: &pb.ProtocolHint_OpaqueTransport{
+				InboundPort: 4143,
+			},
+		}
+
+		mockGetServer, translator := makeEndpointTranslatorWithOpaqueTransport(t, true)
+		translator.Start()
+		defer translator.Stop()
+
+		translator.Add(mkAddressSetForPods(t, pod1, pod2, pod3))
+
+		addressesAdded := (<-mockGetServer.updatesReceived).GetAdd().Addrs
+		actualNumberOfAdded := len(addressesAdded)
+		expectedNumberOfAdded := 3
+		if actualNumberOfAdded != expectedNumberOfAdded {
+			t.Fatalf("Expecting [%d] addresses to be added, got [%d]: %v", expectedNumberOfAdded, actualNumberOfAdded, addressesAdded)
+		}
+
+		for i := 0; i < 3; i++ {
+			actualProtocolHint := addressesAdded[i].GetProtocolHint()
+			if diff := deep.Equal(actualProtocolHint, expectedProtocolHint); diff != nil {
+				t.Fatalf("ProtocolHint: %v", diff)
+			}
+		}
+	})
+
+	t.Run("Sends admin addresses without opaque transport", func(t *testing.T) {
+		expectedProtocolHint := &pb.ProtocolHint{
+			Protocol: &pb.ProtocolHint_H2_{
+				H2: &pb.ProtocolHint_H2{},
+			},
+		}
+
+		mockGetServer, translator := makeEndpointTranslatorWithOpaqueTransport(t, true)
+		translator.Start()
+		defer translator.Stop()
+
+		translator.Add(mkAddressSetForPods(t, podAdmin, podControl))
+
+		addressesAdded := (<-mockGetServer.updatesReceived).GetAdd().Addrs
+		actualNumberOfAdded := len(addressesAdded)
+		expectedNumberOfAdded := 2
+		if actualNumberOfAdded != expectedNumberOfAdded {
+			t.Fatalf("Expecting [%d] addresses to be added, got [%d]: %v", expectedNumberOfAdded, actualNumberOfAdded, addressesAdded)
+		}
+
+		for _, addressAdded := range addressesAdded {
+			actualProtocolHint := addressAdded.GetProtocolHint()
+			if diff := deep.Equal(actualProtocolHint, expectedProtocolHint); diff != nil {
+				t.Fatalf("ProtocolHint: %v", diff)
+			}
+		}
 	})
 
 	t.Run("Sends metric labels with added addresses", func(t *testing.T) {

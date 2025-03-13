@@ -345,6 +345,48 @@ func TestUpgradeWebhookCrtsNameChange(t *testing.T) {
 	}
 }
 
+func TestUpgradeCRDsWithGatewayAPI(t *testing.T) {
+	installOpts := valuespkg.Options{
+		Values: []string{"installGatewayAPI=true"},
+	}
+	var installBuf bytes.Buffer
+	if err := renderCRDs(context.Background(), nil, &installBuf, installOpts, "yaml"); err != nil {
+		t.Fatalf("could not render install manifests: %s", err)
+	}
+	installManifest := installBuf.String()
+	k, err := k8s.NewFakeAPIFromManifests([]io.Reader{strings.NewReader(installManifest)})
+	if err != nil {
+		t.Fatalf("failed to initialize fake API: %s\n\n%s", err, installManifest)
+	}
+	upgradeBuf := upgradeCRDs(context.Background(), k, valuespkg.Options{}, "yaml")
+	upgradeManifest := upgradeBuf.String()
+
+	if err := testDataDiffer.DiffTestYAML("upgrade_crds_with_gateway_api.golden", upgradeManifest); err != nil {
+		t.Error(err)
+	}
+}
+
+func TestUpgradeCRDsWithoutGatewayAPI(t *testing.T) {
+	installOpts := valuespkg.Options{
+		Values: []string{"installGatewayAPI=false"},
+	}
+	var installBuf bytes.Buffer
+	if err := renderCRDs(context.Background(), nil, &installBuf, installOpts, "yaml"); err != nil {
+		t.Fatalf("could not render install manifests: %s", err)
+	}
+	installManifest := installBuf.String()
+	k, err := k8s.NewFakeAPIFromManifests([]io.Reader{strings.NewReader(installManifest)})
+	if err != nil {
+		t.Fatalf("failed to initialize fake API: %s\n\n%s", err, installManifest)
+	}
+	upgradeBuf := upgradeCRDs(context.Background(), k, valuespkg.Options{}, "yaml")
+	upgradeManifest := upgradeBuf.String()
+
+	if err := testDataDiffer.DiffTestYAML("upgrade_crds_without_gateway_api.golden", upgradeManifest); err != nil {
+		t.Error(err)
+	}
+}
+
 func replaceK8sSecrets(input string) string {
 	manifest := strings.ReplaceAll(input, "kubernetes.io/tls", "Opaque")
 	manifest = strings.ReplaceAll(manifest, "tls.key", "key.pem")
@@ -577,7 +619,7 @@ func pathMatch(path []string, template []string) bool {
 func renderInstall(t *testing.T, values *charts.Values) *bytes.Buffer {
 	t.Helper()
 	var buf bytes.Buffer
-	if err := renderCRDs(&buf, valuespkg.Options{}, "yaml"); err != nil {
+	if err := renderCRDs(context.Background(), nil, &buf, valuespkg.Options{}, "yaml"); err != nil {
 		t.Fatalf("could not render install manifests: %s", err)
 	}
 	buf.WriteString("---\n")
@@ -592,7 +634,7 @@ func renderUpgrade(installManifest string, upgradeOpts []flag.Flag, templateOpts
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize fake API: %w\n\n%s", err, installManifest)
 	}
-	buf := upgradeCRDs(valuespkg.Options{}, "yaml")
+	buf := upgradeCRDs(context.Background(), k, valuespkg.Options{}, "yaml")
 	buf.WriteString("---\n")
 	cpbuf, err := upgradeControlPlane(context.Background(), k, upgradeOpts, templateOpts, "yaml")
 	if err != nil {
